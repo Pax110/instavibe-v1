@@ -5,12 +5,12 @@
 # Example: source ./set_gcp_env.sh
 
 # --- Configuration ---
-PROJECT_FILE="~/project_id.txt"
-SPANNER_INSTANCE_ID="instavibe-graph-instance"
-SPANNER_DATABASE_ID="graphdb"
+PROJECT_FILE="$HOME/project_id_v1.txt"
+SPANNER_INSTANCE_ID="instavibe-graph-instance-v1"
+SPANNER_DATABASE_ID="graphdb_v1"
 GOOGLE_CLOUD_LOCATION="us-central1"
-REPO_NAME="introveally-repo"
-MAPKEY_FILE="~/mapkey.txt"
+REPO_NAME="introveally-repo-v1"
+MAPKEY_FILE="$HOME/mapkey_v1.txt"
 # ---------------------
 
 echo "--- Setting Google Cloud Environment Variables ---"
@@ -32,30 +32,32 @@ fi
 
 
 # 1. Check if project file exists
-PROJECT_FILE_PATH=$(eval echo $PROJECT_FILE) # Expand potential ~
-if [ ! -f "$PROJECT_FILE_PATH" ]; then
-  echo "Error: Project file not found at $PROJECT_FILE_PATH"
-  echo "Please create $PROJECT_FILE_PATH containing your Google Cloud project ID."
+if [ ! -f "$PROJECT_FILE" ]; then
+  echo "Error: Project file not found at '$PROJECT_FILE'"
+  echo "Please run the './init.sh' script first to create it."
   return 1 # Return 1 as we are sourcing
 fi
 
 # 2. Set the default gcloud project configuration
-PROJECT_ID_FROM_FILE=$(cat "$PROJECT_FILE_PATH")
+PROJECT_ID_FROM_FILE=$(cat "$PROJECT_FILE")
 echo "Setting gcloud config project to: $PROJECT_ID_FROM_FILE"
-# Adding --quiet; set -e will handle failure if the project doesn't exist or access is denied
-gcloud config set project "$PROJECT_ID_FROM_FILE" --quiet
+# Add error checking. If the project doesn't exist or user lacks permissions, this will fail.
+gcloud config set project "$PROJECT_ID_FROM_FILE" --quiet || return 1
 
 # 3. Export PROJECT_ID (Get from config to confirm it was set correctly)
 export PROJECT_ID=$(gcloud config get project)
 echo "Exported PROJECT_ID=$PROJECT_ID"
 
 # 4. Export PROJECT_NUMBER
-# Using --format to extract just the projectNumber value
-export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
+# Add error checking and use an intermediate variable for robustness.
+PROJECT_NUMBER_VAL=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)") || return 1
+export PROJECT_NUMBER=$PROJECT_NUMBER_VAL
 echo "Exported PROJECT_NUMBER=$PROJECT_NUMBER"
 
 # 5. Export SERVICE_ACCOUNT_NAME (Default Compute Service Account)
-export SERVICE_ACCOUNT_NAME=$(gcloud compute project-info describe --format="value(defaultServiceAccount)")
+# Add error checking and use an intermediate variable for robustness.
+SERVICE_ACCOUNT_NAME_VAL=$(gcloud compute project-info describe --format="value(defaultServiceAccount)") || return 1
+export SERVICE_ACCOUNT_NAME=$SERVICE_ACCOUNT_NAME_VAL
 echo "Exported SERVICE_ACCOUNT_NAME=$SERVICE_ACCOUNT_NAME"
 
 # 6. Export SPANNER_INSTANCE_ID
@@ -90,13 +92,12 @@ export REGION="$GOOGLE_CLOUD_LOCATION"
 echo "Exported REGION=$GOOGLE_CLOUD_LOCATION"
 
 # 13. Check for and set GOOGLE_MAPS_API_KEY from mapkey.txt
-MAPKEY_FILE_PATH=$(eval echo $MAPKEY_FILE)
-if [ -f "$MAPKEY_FILE_PATH" ]; then
+if [ -f "$MAPKEY_FILE" ]; then
   # File exists
-  if [ -s "$MAPKEY_FILE_PATH" ]; then
+  if [ -s "$MAPKEY_FILE" ]; then
     # File is not empty
-    export GOOGLE_MAPS_API_KEY=$(cat "$MAPKEY_FILE_PATH")
-    echo "Exported GOOGLE_MAPS_API_KEY from $MAPKEY_FILE_PATH"
+    export GOOGLE_MAPS_API_KEY=$(cat "$MAPKEY_FILE")
+    echo "Exported GOOGLE_MAPS_API_KEY from $MAPKEY_FILE"
   else
     # File is empty
     echo "WARNING!!WARNING!!WARNING!!WARNING!!WARNING!!WARNING!!WARNING!!WARNING!!"

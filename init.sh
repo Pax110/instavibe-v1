@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-PROJECT_FILE="$HOME/project_id.txt"
+PROJECT_FILE="$HOME/project_id_v1.txt"
 
 echo "--- Setting Google Cloud Project ID File ---"
 # Prompt the user for input
