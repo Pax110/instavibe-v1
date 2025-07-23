@@ -9,7 +9,7 @@ load_dotenv()
 #REPLACE ME initiate agent_engine
 
 
-def call_agent_for_plan(user_name, planned_date, location_n_perference, selected_friend_names_list):
+def call_agent_for_plan(user_name, planned_date, location_preference, selected_friend_names_list):
     user_id = str(user_name)
     # agent_thoughts_log = [] # No longer needed here, we yield directly
 
@@ -17,9 +17,9 @@ def call_agent_for_plan(user_name, planned_date, location_n_perference, selected
     yield {"type": "thought", "data": f"Session ID for this run: {user_id}"}
     yield {"type": "thought", "data": f"User: {user_name}"}
     yield {"type": "thought", "data": f"Planned Date: {planned_date}"}
-    yield {"type": "thought", "data": f"Location/Preference: {location_n_perference}"}
+    yield {"type": "thought", "data": f"Location/Preference: {location_preference}"}
     yield {"type": "thought", "data": f"Selected Friends: {', '.join(selected_friend_names_list)}"}
-    yield {"type": "thought", "data": f"Initiating plan for {user_name} on {planned_date} regarding '{location_n_perference}' with friends: {', '.join(selected_friend_names_list)}."}
+    yield {"type": "thought", "data": f"Initiating plan for {user_name} on {planned_date} regarding '{location_preference}' with friends: {', '.join(selected_friend_names_list)}."}
 
     selected_friend_names_str = ', '.join(selected_friend_names_list)
     # print(f"Selected Friends (string for agent): {selected_friend_names_str}") # Console log
@@ -27,7 +27,7 @@ def call_agent_for_plan(user_name, planned_date, location_n_perference, selected
     # Constructing an example for the prompt, e.g., ["Alice", "Bob"]
     friends_list_example_for_prompt = json.dumps(selected_friend_names_list)
 
-    prompt_message = f"""Plan a personalized night out for {user_name} with friends {selected_friend_names_str} on {planned_date}, with the location or preference being "{location_n_perference}".
+    prompt_message = f"""Plan a personalized night out for {user_name} with friends {selected_friend_names_str} on {planned_date}, with the location or preference being "{location_preference}".
 
     Analyze friend interests (if possible, use Instavibe profiles or summarized interests) to create a tailored plan.  Ensure the plan includes the date {planned_date}.
 
