@@ -2,8 +2,8 @@
 
 import os
 import traceback
-from datetime import datetime,
-import json # For example usage printing
+from datetime import datetime
+import json  # For example usage printing
 
 from google.cloud import spanner
 from google.cloud.spanner_v1 import param_types
