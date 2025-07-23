@@ -58,7 +58,7 @@ def submit_introvert_ally_request():
     """Handles the submission of the Introvert Ally form."""
     if request.method == 'POST':
         date = request.form.get('event_date')
-        location_preference = request.form.get('location') # Renamed for clarity
+        location_preference = request.form.get('location_preference')
         selected_friend_names_list = request.form.getlist('selected_friends')
 
         # Basic validation
@@ -70,7 +70,7 @@ def submit_introvert_ally_request():
         session['ally_request_params'] = {
             "user_name": "Alice", # Hardcoded for now
             "planned_date": date,
-            "location_n_perference": location_preference,
+            "location_preference": location_preference,
             "selected_friend_names_list": selected_friend_names_list
         }
         # Clear any old plan details
@@ -100,7 +100,7 @@ def stream_introvert_ally_plan():
             for event_data in call_agent_for_plan(
                 user_name=ally_params['user_name'],
                 planned_date=ally_params['planned_date'],
-                location_n_perference=ally_params['location_n_perference'],
+                location_preference=ally_params['location_preference'],
                 selected_friend_names_list=ally_params['selected_friend_names_list']
             ):
                 event_type = event_data.get("type", "thought") 
