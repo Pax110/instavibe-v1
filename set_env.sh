@@ -7,7 +7,7 @@
 # --- Configuration ---
 PROJECT_FILE="$HOME/project_id_v1.txt"
 SPANNER_INSTANCE_ID="instavibe-graph-instance-v1"
-SPANNER_DATABASE_ID="graphdb_v1"
+SPANNER_DATABASE_ID="graphdbv1"
 GOOGLE_CLOUD_LOCATION="us-central1"
 REPO_NAME="introveally-repo-v1"
 MAPKEY_FILE="$HOME/mapkey_v1.txt"
