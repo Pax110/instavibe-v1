@@ -165,7 +165,7 @@ def setup_base_schema_and_indexes(db_instance):
         "CREATE INDEX IF NOT EXISTS AttendanceByEvent ON Attendance(event_id, person_id)",
         "CREATE INDEX IF NOT EXISTS MentionByPerson ON Mention(mentioned_person_id, post_id)",
         "CREATE INDEX IF NOT EXISTS EventLocationByLocationId ON EventLocation(location_id, event_id)", # Index for linking table
-        "CREATE UNIQUE INDEX IF NOT EXISTS TopicByName ON Topic(name)",
+        # "CREATE UNIQUE INDEX IF NOT EXISTS TopicByName ON Topic(name)",
         "CREATE INDEX IF NOT EXISTS TopicContentByPage ON TopicContent(topic_id, page_no)",
     ]
     return run_ddl_statements(db_instance, ddl_statements, "Create Base Tables and Indexes")
@@ -260,14 +260,86 @@ def insert_relational_data(db_instance):
 
     # 2. Prepare Events Data
     event_data = {
-        "Charity Bake Sale": {"date": (now - timedelta(days=6, hours=4)).isoformat(), "description": "Support local charities by buying delicious baked goods. All proceeds go to a good cause.", "locations": [{"name": "Community Hall - Main Room", "description": "Cakes, pies, and cookies.", "latitude": 34.052235, "longitude": -118.243683, "address": "123 Main St, Anytown"}, {"name": "Community Hall - Patio", "description": "Brownies and beverages.", "latitude": 34.052000, "longitude": -118.243500, "address": "123 Main St, Anytown (Patio)"}]},
-        "Tech Meetup: Future of AI": {"date": (now - timedelta(days=5, hours=10)).isoformat(), "description": "A deep dive into the future of Artificial Intelligence, with guest speakers from leading tech companies.", "locations": [{"name": "Innovation Hub Auditorium", "description": "Main presentations and Q&A.", "latitude": 37.774929, "longitude": -122.419418, "address": "456 Tech Ave, San Francisco"}]},
-        "Central Park Picnic": {"date": (now - timedelta(days=4, hours=6)).isoformat(), "description": "A casual picnic in the park. Bring your own food and blankets!", "locations": [{"name": "Great Lawn - North End", "description": "Look for the blue balloons.", "latitude": 40.782864, "longitude": -73.965355, "address": "Central Park, New York"}]},
-        "Indie Film Screening": {"date": (now - timedelta(days=3, hours=12)).isoformat(), "description": "Screening of 'The Lighthouse Keeper', followed by a Q&A with the director.", "locations": [{"name": "Art House Cinema", "description": "Screen 2.", "latitude": 34.090000, "longitude": -118.360000, "address": "789 Movie Ln, Los Angeles"}]},
-        "Neighborhood Potluck": {"date": (now - timedelta(days=2, hours=8)).isoformat(), "description": "Share your favorite dish with your neighbors. Fun for the whole family.", "locations": [{"name": "Greenwood Park Pavilion", "description": "Covered area near the playground.", "latitude": 47.606209, "longitude": -122.332069, "address": "101 Park Rd, Seattle"}]},
-        "Escape Room: The Lost Temple": {"date": (now - timedelta(days=1, hours=5)).isoformat(), "description": "Can you solve the puzzles and escape the Lost Temple in 60 minutes?", "locations": [{"name": "Enigma Escapes", "description": "The Lost Temple room.", "latitude": 30.267153, "longitude": -97.743057, "address": "321 Puzzle Pl, Austin"}]},
-        "Music in the Park Festival": {"date": (now - timedelta(days=0, hours=18)).isoformat(), "description": "A two-day music festival featuring local bands and artists across multiple stages.", "locations": [{"name": "Main Stage - Meadow", "description": "Headline acts.", "latitude": 34.0600, "longitude": -118.2500, "address": "City Park, Meadow Area"}, {"name": "Acoustic Tent - By The Lake", "description": "Intimate performances.", "latitude": 34.0615, "longitude": -118.2520, "address": "City Park, Lakeside"}, {"name": "Food Truck Alley - East Path", "description": "Various food vendors.", "latitude": 34.0590, "longitude": -118.2480, "address": "City Park, East Pathway"}]}
+        
+    "AI Ethics Roundtable": {
+        "date": (now - timedelta(days=5, hours=10)).isoformat(),
+        "description": "Panel of researchers and developers debating the ethical considerations in AI deployment.",
+        "locations": [
+            {
+                "name": "Tech Civic Auditorium",
+                "description": "Live panel discussion and audience Q&A.",
+                "latitude": 37.7749,
+                "longitude": -122.4194,
+                "address": "123 AI Blvd, San Francisco, CA"
+            }
+        ]
+    },
+    "Blockchain & Sustainability Talk": {
+        "date": (now - timedelta(days=4, hours=6)).isoformat(),
+        "description": "Experts explore how blockchain technology can support sustainability goals.",
+        "locations": [
+            {
+                "name": "Innovation Center - Room 204",
+                "description": "Lecture and networking session.",
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "address": "456 Chain Ln, New York, NY"
+            }
+        ]
+    },
+    "DAO Governance Workshop": {
+        "date": (now - timedelta(days=3, hours=12)).isoformat(),
+        "description": "Hands-on workshop examining the governance structures in decentralized organizations.",
+        "locations": [
+            {
+                "name": "Crypto Lab Campus",
+                "description": "Interactive DAO simulations and case studies.",
+                "latitude": 34.0522,
+                "longitude": -118.2437,
+                "address": "789 Crypto Ave, Los Angeles, CA"
+            }
+        ]
+    },
+    "Climate Tech Innovations Forum": {
+        "date": (now - timedelta(days=2, hours=8)).isoformat(),
+        "description": "Startup showcase and research findings on next-gen climate tech.",
+        "locations": [
+            {
+                "name": "Green Future Hall",
+                "description": "Startup presentations and investor Q&A.",
+                "latitude": 47.6062,
+                "longitude": -122.3321,
+                "address": "101 Eco Rd, Seattle, WA"
+            }
+        ]
+    },
+    "Decentralized Identity Seminar": {
+        "date": (now - timedelta(days=1, hours=5)).isoformat(),
+        "description": "In-depth seminar on self-sovereign identity and digital trust frameworks.",
+        "locations": [
+            {
+                "name": "Privacy Research Hub",
+                "description": "Keynote + roundtable breakout sessions.",
+                "latitude": 30.2672,
+                "longitude": -97.7431,
+                "address": "321 Identity St, Austin, TX"
+            }
+        ]
+    },
+    "AI Art & Expression Night": {
+        "date": (now - timedelta(days=0, hours=18)).isoformat(),
+        "description": "Exploring creativity through AI-generated art and collaborative tools.",
+        "locations": [
+            {
+                "name": "Creative Tech Gallery",
+                "description": "AI-generated works + artist panels.",
+                "latitude": 34.0610,
+                "longitude": -118.2470,
+                "address": "City Arts Building, Downtown LA"
+            }
+        ]
     }
+}
     print(f"Preparing {len(event_data)} events.")
     for name, data in event_data.items():
         event_id = generate_uuid()
@@ -316,44 +388,57 @@ def insert_relational_data(db_instance):
 
              
     # 2. Prepare Topics Data
-        topic_seed = {
-        "Artificial Intelligence": {
-            "description": "Fundamentals, history, and future directions of AI.",
-            "pages": [
-                {"title": "What is AI?", "body": "Artificial Intelligence (AI) refers ..."},
-                {"title": "Main Techniques", "body": "Machine learning, deep learning ..."},
-                {"title": "Ethical Considerations", "body": "Bias, transparency ..."}
-            ]
-        },
-        "Baking & Pastries": {
-            "description": "Recipes and science behind breads, cakes, and cookies.",
-            "pages": [
-                {"title": "Yeast vs Chemical Leavening", "body": "Yeast produces CO₂ ..."},
-                {"title": "Perfecting Pie Crust", "body": "Keep everything cold ..."}
-            ]
-        },
-        "Outdoor Activities": {
-            "description": "Hiking, camping, and nature safety tips.",
-            "pages": [
-                {"title": "Day‑Hike Checklist", "body": "Water, snacks, map ..."},
-                {"title": "Leave No Trace", "body": "Plan ahead, travel on durable surfaces ..."}
-            ]
-        },
-        "Film & Cinema": {
-            "description": "History, genres, and filmmaking techniques.",
-            "pages": [
-                {"title": "Lighting 101", "body": "Key light, fill light ..."},
-                {"title": "Film Movements", "body": "German Expressionism, French New Wave ..."}
-            ]
-        },
-        "Mindfulness & Wellness": {
-            "description": "Practices for mental clarity and stress reduction.",
-            "pages": [
-                {"title": "Introduction to Mindfulness", "body": "Focus on the breath ..."},
-                {"title": "Building a Routine", "body": "Start with 5 minutes each morning ..."}
-            ]
-        }
+    topic_seed = {
+    "AI Ethics": {
+        "description": "Explores ethical challenges in AI development and deployment.",
+        "pages": [
+            {"title": "What Is AI Ethics?", "body": "AI ethics addresses fairness, transparency, and accountability in algorithms."},
+            {"title": "Bias in Machine Learning", "body": "ML models can reflect and amplify societal biases if not carefully managed."},
+            {"title": "Regulation & Responsibility", "body": "Discussion on laws, self-regulation, and ethical leadership in AI."}
+        ]
+    },
+    "Blockchain & Sustainability": {
+        "description": "Explores how blockchain technology intersects with environmental and social impact.",
+        "pages": [
+            {"title": "What Is Blockchain?", "body": "A decentralized ledger technology that enables transparent record-keeping."},
+            {"title": "Energy Consumption Concerns", "body": "Mining and proof-of-work systems can be energy-intensive."},
+            {"title": "Greener Alternatives", "body": "Proof-of-stake, layer 2 scaling, and eco-conscious projects aim to reduce impact."}
+        ]
+    },
+    "DAO Governance": {
+        "description": "Decentralized Autonomous Organizations (DAOs) and how they are governed.",
+        "pages": [
+            {"title": "Intro to DAOs", "body": "DAOs are internet-native entities with community-led decision-making."},
+            {"title": "Voting Mechanisms", "body": "Token-based, quadratic, and reputation-weighted voting models."},
+            {"title": "Challenges of Governance", "body": "Participation, coordination, and proposal fatigue in DAOs."}
+        ]
+    },
+    "Climate Tech Innovations": {
+        "description": "Breakthroughs in clean energy, carbon capture, and climate resilience technologies.",
+        "pages": [
+            {"title": "What Is Climate Tech?", "body": "Technologies designed to reduce greenhouse gas emissions or adapt to climate change."},
+            {"title": "Carbon Capture", "body": "Direct air capture, biochar, and industrial absorption techniques."},
+            {"title": "Renewables & Storage", "body": "Solar, wind, grid storage, and innovation in batteries."}
+        ]
+    },
+    "Decentralized Identity": {
+        "description": "Digital ID systems that prioritize privacy, control, and self-sovereignty.",
+        "pages": [
+            {"title": "What Is Decentralized Identity?", "body": "An identity system where users own and control their credentials."},
+            {"title": "Verifiable Credentials", "body": "Standard for issuing and presenting digital credentials."},
+            {"title": "Privacy Considerations", "body": "Selective disclosure and zero-knowledge proofs in identity sharing."}
+        ]
+    },
+    "AI in Creative Expression": {
+        "description": "Examines how AI tools are reshaping creative domains like art, music, and design.",
+        "pages": [
+            {"title": "Generative Art", "body": "AI-generated paintings, animations, and design tools like DALL·E."},
+            {"title": "Music Composition", "body": "AI tools assist in generating melodies, harmonies, and rhythms."},
+            {"title": "Human-AI Collaboration", "body": "Artists using AI to augment—not replace—creative workflows."}
+        ]
     }
+}
+    
     for t_name, t_info in topic_seed.items():
         tid = generate_uuid()
         topic_map[t_name] = tid
@@ -393,7 +478,42 @@ def insert_relational_data(db_instance):
 
 
     # 4. Prepare Attendance Data
-    attendance_data = [("Alice", "Charity Bake Sale"), ("Alice", "Tech Meetup: Future of AI"), ("Bob", "Charity Bake Sale"), ("Bob", "Central Park Picnic"), ("Charlie", "Tech Meetup: Future of AI"), ("Diana", "Central Park Picnic"), ("Diana", "Indie Film Screening"), ("Ethan", "Tech Meetup: Future of AI"), ("Ethan", "Neighborhood Potluck"), ("Fiona", "Central Park Picnic"), ("Fiona", "Escape Room: The Lost Temple"), ("George", "Neighborhood Potluck"), ("George", "Escape Room: The Lost Temple"), ("Hannah", "Charity Bake Sale"), ("Hannah", "Indie Film Screening"), ("Ian", "Tech Meetup: Future of AI"), ("Ian", "Neighborhood Potluck"), ("Julia", "Central Park Picnic"), ("Julia", "Escape Room: The Lost Temple"), ("Kevin", "Indie Film Screening"), ("Laura", "Neighborhood Potluck")]
+    attendance_data = [
+    ("Alice", "Climate Tech Innovations Forum"),
+    ("Alice", "Blockchain & Sustainability Talk"),
+    ("Alice", "Decentralized Identity Seminar"),
+    ("Bob", "Climate Tech Innovations Forum"),
+    ("Charlie", "Blockchain & Sustainability Talk"),
+    ("Charlie", "DAO Governance Workshop"),
+    ("Charlie", "Decentralized Identity Seminar"),
+    ("Diana", "Blockchain & Sustainability Talk"),
+    ("Diana", "DAO Governance Workshop"),
+    ("Ethan", "Blockchain & Sustainability Talk"),
+    ("Ethan", "Decentralized Identity Seminar"),
+    ("Fiona", "AI Ethics Roundtable"),
+    ("Fiona", "Blockchain & Sustainability Talk"),
+    ("Fiona", "Decentralized Identity Seminar"),
+    ("George", "Climate Tech Innovations Forum"),
+    ("George", "AI Art & Expression Night"),
+    ("Hannah", "Blockchain & Sustainability Talk"),
+    ("Ian", "Climate Tech Innovations Forum"),
+    ("Ian", "AI Art & Expression Night"),
+    ("Ian", "DAO Governance Workshop"),
+    ("Julia", "Blockchain & Sustainability Talk"),
+    ("Julia", "Climate Tech Innovations Forum"),
+    ("Kevin", "Decentralized Identity Seminar"),
+    ("Kevin", "AI Art & Expression Night"),
+    ("Laura", "Climate Tech Innovations Forum"),
+    ("Mike", "Blockchain & Sustainability Talk"),
+    ("Mike", "Decentralized Identity Seminar"),
+    ("Mike", "AI Art & Expression Night"),
+    ("Nora", "DAO Governance Workshop"),
+    ("Nora", "AI Ethics Roundtable"),
+    ("Oscar", "AI Ethics Roundtable"),
+    ("Oscar", "Blockchain & Sustainability Talk")
+]
+
+
     print(f"Preparing {len(attendance_data)} attendance records.")
     for person_name, event_name in attendance_data:
         if person_name in people_map and event_name in event_map:

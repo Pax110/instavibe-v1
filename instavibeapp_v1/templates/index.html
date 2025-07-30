@@ -4,10 +4,33 @@
 {% block title %}Home Feed - InstaVibe{% endblock %}
 
 {% block content %}
-<div class="row"> {# Main row containing BOTH columns #}
+<div class="row"> <!-- Main row containing THREE columns -->
+
+    <!-- Left Sidebar Column: Topics -->
+    <div class="col-md-3 col-lg-3 d-none d-md-block">
+        <div class="side-panel event-panel-box">
+            <div class="side-panel-content">
+                <h3 class="panel-title">Topics</h3>
+                {% if topics %}
+                    <ul class="list-group list-group-flush">
+                        {% for topic in topics %}
+                        <li class="list-group-item">
+                            <div class="event-name">{{ topic.name }}</div>
+                            {% if topic.description %}
+                            <div class="event-date">{{ topic.description }}</div>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No topics found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
     <!-- Main Feed Column -->
-    <div class="col-md-7 col-lg-7">
+    <div class="col-md-6 col-lg-6">
         <div class="main-feed">
             {% if posts %}
                 {% for post in posts %}
@@ -22,19 +45,19 @@
     </div>
 
     <!-- Right Sidebar Column: Events -->
-    <div class="col-md-5 col-lg-5 d-none d-md-block">
-        {# REMOVED position-sticky and style="top: 6rem;" from the div below #}
+    <div class="col-md-3 col-lg-3 d-none d-md-block">
         <div class="side-panel event-panel-box">
-            {# Inner div still handles potential scrolling if list is very long #}
             <div class="side-panel-content">
                 <h3 class="panel-title">Events</h3>
                 {% if all_events_attendance %}
                     <ul class="list-group list-group-flush">
                         {% for event_info in all_events_attendance %}
-                        <li class="list-group-item event-list-item">
-                            <div class="event-name"> <a href="{{ url_for('event_detail_page', event_id=event_info.details.event_id) }}">
-                                {{ event_info.details.name }}
-                            </a></div>
+                        <li class="list-group-item">
+                            <div class="event-name">
+                                <a href="{{ url_for('event_detail_page', event_id=event_info.details.event_id) }}">
+                                    {{ event_info.details.name }}
+                                </a>
+                            </div>
                             <div class="event-date">{{ event_info.details.event_date | humanize_datetime }}</div>
                             {% if event_info.attendees %}
                                 <small class="d-block text-muted mt-1">Attendees:</small>
@@ -46,7 +69,7 @@
                                 {% endfor %}
                                 </ul>
                             {% else %}
-                                 <small class="text-muted d-block ps-3 mt-1">No registered attendees.</small>
+                                <small class="text-muted d-block ps-3 mt-1">No registered attendees.</small>
                             {% endif %}
                         </li>
                         {% endfor %}
@@ -54,9 +77,9 @@
                 {% else %}
                     <p class="text-muted">No events found.</p>
                 {% endif %}
-            </div> {# End side-panel-content #}
-        </div> {# End side-panel #}
-    </div> {# End column #}
+            </div>
+        </div>
+    </div>
 
-</div> {# End of the main <div class="row"> #}
+</div> <!-- End of main row -->
 {% endblock %}
