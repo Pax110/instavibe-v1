@@ -170,3 +170,13 @@ body {
 .side-panel small.text-muted {
     font-size: 0.85em;
 }
+/* --- Mind Companion --- */
+.companion-wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.companion-card {
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+}

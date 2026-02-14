@@ -181,6 +181,54 @@ def run_query(sql, params=None, param_types=None, expected_fields=None): # Add e
 
     return results_list
 
+
+def build_grounding_plan(low_moment_note, trigger, energy_level, immediate_need):
+    """Create a practical, compassionate support plan from user inputs."""
+    # Evidence-informed and philosophy-inspired micro-practices.
+    neuroplasticity_practice = {
+        "low": "Do a 2-minute pattern interrupt: stand up, stretch your shoulders, and name 3 safe things you can see.",
+        "medium": "Do one 5-minute focused cycle: breathe slowly (4 in, 6 out) while labeling thoughts as 'story' and 'fact'.",
+        "high": "Do one 10-minute resilience block: slow breathing + brief walk + write one helpful reframe.",
+    }.get(energy_level, "Take three slow breaths and orient to your surroundings.")
+
+    immediate_support = {
+        "calm": "Let's slow the nervous system first with gentle breathing and body grounding.",
+        "clarity": "Let's separate facts from interpretations so your mind feels less flooded.",
+        "confidence": "Let's practice one self-respect action that proves you can protect your energy.",
+        "connection": "Let's prepare one honest message you can send to a trusted person.",
+    }.get(immediate_need, "Let's start with one tiny stabilizing step.")
+
+    junguian_prompt = (
+        "If this painful voice were a character, what is it trying to protect in you? "
+        "Thank it, then choose a wiser voice to lead for the next hour."
+    )
+
+    buddhist_prompt = (
+        "Notice: 'This is a moment of suffering. Suffering is part of being human. "
+        "May I respond with kindness.'"
+    )
+
+    dharmic_action = (
+        "Choose your next right action (dharma): one small duty aligned with your values, "
+        "done without judging your worth."
+    )
+
+    return {
+        "reflection": low_moment_note.strip() if low_moment_note else "You are allowed to have sensitive moments; sensitivity is not weakness.",
+        "trigger": trigger.strip() if trigger else "General emotional overload",
+        "immediate_support": immediate_support,
+        "neuroplasticity_practice": neuroplasticity_practice,
+        "junguian_prompt": junguian_prompt,
+        "buddhist_prompt": buddhist_prompt,
+        "dharmic_action": dharmic_action,
+        "tiny_plan": [
+            "Name the feeling in one sentence.",
+            "Do one body-based reset (breath, water, stretch, or short walk).",
+            "Write one balanced thought that is kinder and still realistic.",
+            "Take one next action under 10 minutes.",
+        ],
+    }
+
 # --- HOW TO CALL IT ---
 
 def get_all_posts_with_author_db():
@@ -292,6 +340,20 @@ def event_detail_page(event_id):
 def person_profile(person_id):
     """Person profile page, fetching data from Spanner."""
     return f"Person page for {person_id}"
+
+
+@app.route('/mind-companion', methods=['GET', 'POST'])
+def mind_companion():
+    """A personal emotional first-aid page with structured, non-clinical guidance."""
+    plan = None
+    if request.method == 'POST':
+        low_moment_note = request.form.get('low_moment_note', '')
+        trigger = request.form.get('trigger', '')
+        energy_level = request.form.get('energy_level', 'low')
+        immediate_need = request.form.get('immediate_need', 'calm')
+        plan = build_grounding_plan(low_moment_note, trigger, energy_level, immediate_need)
+
+    return render_template('mind_companion.html', plan=plan, topics=[], all_events_attendance=[])
 
 
 
